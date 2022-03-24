@@ -1,0 +1,7 @@
+{
+  "app": "python app.py",
+  "watch": {
+    "include": ["**/*.py"],
+    "exclude": ["README.md", "cdk*.json", "cdk.out/**/*"]
+  }
+}
