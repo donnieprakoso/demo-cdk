@@ -21,19 +21,6 @@ class LambdaFunctionStack(Stack):
             runtime=_lambda.Runtime.PYTHON_3_8)
 
 
-# class DatabaseStack(Stack):
-
-#     def __init__(self, scope, id):
-#         super().__init__(scope, id)
-#         self.table = dynamodb.Table(self, "Table",
-#             partition_key=dynamodb.Attribute(name="id", type=dynamodb.AttributeType.STRING)
-#         )
-
-# class ComputeStack(Stack):
-# def __init__(self, scope, id, *, table):
-# super().__init__(scope, id)
-
-
 class PipelineStack(Stack):
     def __init__(self, scope, id, env=None):
         super().__init__(scope, id, env=env)
@@ -43,32 +30,26 @@ class PipelineStack(Stack):
             "Pipeline",
             synth=pipelines.ShellStep(
                 "Synth",
-                # Use a connection created using the AWS console to authenticate to GitHub
-                # Other sources are available.
                 input=pipelines.CodePipelineSource.connection(
                     "donnieprakoso/demo-cdk",
                     "main",
-                    connection_arn=
-                    "arn:aws:codestar-connections:ap-southeast-1:194989662172:connection/55046ac9-4dd4-41a1-a3f8-e1bba5b20cff"
+                    connection_arn="arn:aws:codestar-connections:ap-southeast-1:194989662172:connection/55046ac9-4dd4-41a1-a3f8-e1bba5b20cff"
                 ),
-                commands=["cd 6-cdk-pipelines/cdk/", "npm install -g aws-cdk", "pip install -r requirements.txt", "cdk synth"],
-primary_output_directory="6-cdk-pipelines/cdk/cdk.out"
+                commands=["cd 5-cdk-pipelines/cdk/", "npm install -g aws-cdk",
+                          "pip install -r requirements.txt", "cdk synth"],
+                primary_output_directory="5-cdk-pipelines/cdk/cdk.out"
             ))
 
         pipeline.add_stage(
             DemoApplication(self,
-                          "staging",
-                          env=env))
+                            "staging",
+                            env=env))
 
 
 class DemoApplication(Stage):
     def __init__(self, scope, id, *, env=None):
         super().__init__(scope, id, env=env)
 
-        #         db_stack = DatabaseStack(self, "Database")
-        #         ComputeStack(self, "Compute",
-        #             table=db_stack.table
-        #         )
         LambdaFunctionStack(self, "lambda")
 
 
