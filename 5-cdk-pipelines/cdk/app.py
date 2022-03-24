@@ -7,6 +7,7 @@ from aws_cdk import aws_dynamodb as dynamodb
 from aws_cdk import pipelines
 from aws_cdk import aws_lambda as _lambda
 import aws_cdk as _cdk
+from aws_cdk import aws_ssm as _ssm
 
 
 class LambdaFunctionStack(Stack):
@@ -25,6 +26,8 @@ class PipelineStack(Stack):
     def __init__(self, scope, id, env=None):
         super().__init__(scope, id, env=env)
 
+        github_connection_arn = _ssm.StringParameter.from_string_parameter_name(
+            self, "github-connection-arn", string_parameter_name="github-connection-arn").string_value
         pipeline = pipelines.CodePipeline(
             self,
             "Pipeline",
@@ -33,7 +36,7 @@ class PipelineStack(Stack):
                 input=pipelines.CodePipelineSource.connection(
                     "donnieprakoso/demo-cdk",
                     "main",
-                    connection_arn="arn:aws:codestar-connections:ap-southeast-1:194989662172:connection/55046ac9-4dd4-41a1-a3f8-e1bba5b20cff"
+                    connection_arn=github_connection_arn
                 ),
                 commands=["cd 5-cdk-pipelines/cdk/", "npm install -g aws-cdk",
                           "pip install -r requirements.txt", "cdk synth"],
