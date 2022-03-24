@@ -1,0 +1,18 @@
+{
+  "language": "python",
+  "app": "pipenv run python main.py",
+  "projectId": "8dd3e94b-07f4-4c7e-8584-63f0f62098e7",
+  "terraformProviders": ["hashicorp/aws@~>3.69.0"],
+  "terraformModules": [
+    {
+      "name": "AwsLambda",
+      "source": "terraform-aws-modules/lambda/aws",
+      "version": "2.34.0"
+    }
+  ],  
+  "codeMakerOutput": "imports",
+  "context": {
+    "excludeStackIdFromLogicalIds": "true",
+"allowSepCharsInLogicalIds": "true"
+  }
+}
