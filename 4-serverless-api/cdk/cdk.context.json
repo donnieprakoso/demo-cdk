@@ -1,0 +1,6 @@
+{
+  "aws-cdk:enableDiffNoFail": "true",
+  "acknowledged-issue-numbers": [
+    19179
+  ]
+}
