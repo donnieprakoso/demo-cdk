@@ -51,7 +51,9 @@ class PipelineStack(Stack):
                     connection_arn=
                     "arn:aws:codestar-connections:ap-southeast-1:194989662172:connection/55046ac9-4dd4-41a1-a3f8-e1bba5b20cff"
                 ),
-                commands=["cd 6-cdk-pipelines/cdk/", "npm install -g aws-cdk", "pip install -r requirements.txt", "cdk synth"]))
+                commands=["cd 6-cdk-pipelines/cdk/", "npm install -g aws-cdk", "pip install -r requirements.txt", "cdk synth"],
+primary_output_directory="6-cdk-pipelines/cdk/cdk.out"
+            ))
 
         pipeline.add_stage(
             DemoApplication(self,
