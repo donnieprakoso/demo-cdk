@@ -153,7 +153,8 @@ class PipelineStack(Stack):
                 "6-pipelines-serverless-api/cdk/cdk.out"))
 
         pipeline.add_stage(DemoApplication(self, "staging", env=env))
-        pipeline.add_stage(DemoApplication(self, "production", env=env))
+        pipeline.add_stage(DemoApplication(self, "production", env=env),
+                           pre=[pipelines.ManualApprovalStep("DeployToProduction")])
 
 
 class DemoApplication(Stage):
