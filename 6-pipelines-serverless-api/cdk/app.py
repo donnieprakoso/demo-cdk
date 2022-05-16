@@ -159,8 +159,7 @@ class PipelineStack(Stack):
 class DemoApplication(Stage):
     def __init__(self, scope, id, *, env=None):
         super().__init__(scope, id, env=env)
-
-        ServerlessApiStack(self, "lambda")
+        ServerlessApiStack(self, "{}-api".format(id))
 
 
 AWS_ACCOUNT_ID = _cdk.Aws.ACCOUNT_ID
