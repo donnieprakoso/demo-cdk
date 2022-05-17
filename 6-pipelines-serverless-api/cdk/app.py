@@ -5,11 +5,11 @@ from aws_cdk import App, Stack, Stage
 import os
 from aws_cdk import aws_iam as _iam
 from aws_cdk import aws_dynamodb as _ddb
-from aws_cdk import pipelines
 from aws_cdk import aws_lambda as _lambda
 import aws_cdk as _cdk
 from aws_cdk import aws_ssm as _ssm
 from aws_cdk import aws_apigateway as _ag
+from aws_cdk import pipelines
 
 
 class ServerlessApiStack(Stack):
@@ -117,14 +117,15 @@ class ServerlessApiStack(Stack):
         res_data_id.add_method('GET', int_getData)
         res_data_id.add_method('DELETE', int_deleteData)
 
-        _cdk.CfnOutput(self,
-                       "{}-output-dynamodbTable".format(id),
-                       value=ddb_table.table_name,
-                       export_name="{}-ddbTable".format(id))
-        _cdk.CfnOutput(self,
-                       "{}-output-apiEndpointURL".format(id),
-                       value=api.url,
-                       export_name="{}-apiEndpointURL".format(id))
+        out_dynamodb = _cdk.CfnOutput(self,
+                                      "{}-output-dynamodbTable".format(id),
+                                      value=ddb_table.table_name,
+                                      export_name="{}-ddbTable".format(id))
+        out_apiendpointURL = _cdk.CfnOutput(self,
+                                            "{}-output-apiEndpointURL".format(
+                                                id),
+                                            value=api.url,
+                                            export_name="{}-apiEndpointURL".format(id))
 
 
 class PipelineStack(Stack):
@@ -149,12 +150,20 @@ class PipelineStack(Stack):
                     "npm install -g aws-cdk",
                     "pip install -r requirements.txt", "cdk synth"
                 ],
-                primary_output_directory=
-                "6-pipelines-serverless-api/cdk/cdk.out"))
+                primary_output_directory="6-pipelines-serverless-api/cdk/cdk.out"))
 
-        pipeline.add_stage(DemoApplication(self, "staging", env=env))
-        pipeline.add_stage(DemoApplication(self, "production", env=env),
-                           pre=[pipelines.ManualApprovalStep("DeployToProduction")])
+        staging_app = DemoApplication(self, "staging", env=env)
+        pipeline.add_stage(staging_app, post=[
+            pipelines.ShellStep("Integration Test",
+                                commands=[
+                                    'curl $ENDPOINT_URL/data',
+                                ],
+                                env_from_cfn_outputs={
+                                    "ENDPOINT_URL": staging_app.out_apiendpointURL}
+                                )
+        ])
+        # pipeline.add_stage(DemoApplication(self, "production", env=env),
+        #                    pre=[pipelines.ManualApprovalStep("DeployToProduction")])
 
 
 class DemoApplication(Stage):
