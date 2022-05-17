@@ -117,15 +117,17 @@ class ServerlessApiStack(Stack):
         res_data_id.add_method('GET', int_getData)
         res_data_id.add_method('DELETE', int_deleteData)
 
-        out_dynamodb = _cdk.CfnOutput(self,
-                                      "{}-output-dynamodbTable".format(id),
-                                      value=ddb_table.table_name,
-                                      export_name="{}-ddbTable".format(id))
-        out_apiendpointURL = _cdk.CfnOutput(self,
-                                            "{}-output-apiEndpointURL".format(
-                                                id),
-                                            value=api.url,
-                                            export_name="{}-apiEndpointURL".format(id))
+        self.out_dynamodb = _cdk.CfnOutput(self,
+                                           "{}-output-dynamodbTable".format(
+                                               id),
+                                           value=ddb_table.table_name,
+                                           export_name="{}-ddbTable".format(id))
+
+        self.out_apiendpointURL = _cdk.CfnOutput(self,
+                                                 "{}-output-apiEndpointURL".format(
+                                                     id),
+                                                 value=api.url,
+                                                 export_name="{}-apiEndpointURL".format(id))
 
 
 class PipelineStack(Stack):
