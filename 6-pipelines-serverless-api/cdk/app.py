@@ -157,7 +157,7 @@ class PipelineStack(Stack):
         staging_app = DemoApplication(self, "staging", env=env)
 
         # Use case 1: Deployment to staging
-        pipeline.add_stage(staging_app, env=env)
+        pipeline.add_stage(staging_app)
 
         # Use case 2: Deployment to staging with integration testing
         # pipeline.add_stage(staging_app, post=[
