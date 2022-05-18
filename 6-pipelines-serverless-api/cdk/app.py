@@ -155,17 +155,25 @@ class PipelineStack(Stack):
                 primary_output_directory="6-pipelines-serverless-api/cdk/cdk.out"))
 
         staging_app = DemoApplication(self, "staging", env=env)
-        pipeline.add_stage(staging_app, post=[
-            pipelines.ShellStep("Integration Test",
-                                commands=[
-                                    'curl $ENDPOINT_URL/data',
-                                ],
-                                env_from_cfn_outputs={
-                                    "ENDPOINT_URL": staging_app.out_apiendpointURL}
-                                )
-        ])
-        # pipeline.add_stage(DemoApplication(self, "production", env=env),
-        #                    pre=[pipelines.ManualApprovalStep("DeployToProduction")])
+
+        # Use case 1: Deployment to staging
+        pipeline.add_stage(staging_app, env=env)
+
+        # Use case 2: Deployment to staging with integration testing
+        # pipeline.add_stage(staging_app, post=[
+            # pipelines.ShellStep("Integration Test",
+                                # commands=[
+                                    # 'curl $ENDPOINT_URL/data',
+                                # ],
+                                # env_from_cfn_outputs={
+                                    # "ENDPOINT_URL": staging_app.out_apiendpointURL}
+                                # )
+        # ])
+
+        # Use case 3: Deployment to multiple environment (production) with manual approval
+        # production_app = DemoApplication(self, "production", env=env)
+        # pipeline.add_stage(production_app,
+                           # pre=[pipelines.ManualApprovalStep("DeployToProduction")])
 
 
 class DemoApplication(Stage):
