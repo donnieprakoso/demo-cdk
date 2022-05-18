@@ -171,9 +171,9 @@ class PipelineStack(Stack):
         # ])
 
         # Use case 3: Deployment to multiple environment (production) with manual approval
-        # production_app = DemoApplication(self, "production", env=env)
-        # pipeline.add_stage(production_app,
-                           # pre=[pipelines.ManualApprovalStep("DeployToProduction")])
+        production_app = DemoApplication(self, "production", env=env)
+        pipeline.add_stage(production_app,
+                           pre=[pipelines.ManualApprovalStep("DeployToProduction")])
 
 
 class DemoApplication(Stage):
