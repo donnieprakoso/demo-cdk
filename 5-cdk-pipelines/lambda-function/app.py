@@ -1,2 +1,2 @@
 def handler(event, context):
-    print("Hello World from AWS CDK!!!")
+    print("Hello World Dicoding!!!")
